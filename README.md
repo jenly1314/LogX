@@ -15,6 +15,12 @@
 > 出现微小的差异，这大大增加了维护的难度。因此，我开始考虑更加优雅的解决方案。在经过一段时间的思考和研究后，
 > 我决定结合平时使用的 [Timber](https://github.com/JakeWharton/timber) 和 [Logger](https://github.com/orhanobut/logger) 这两个成熟的开源库，取其精华，编写一个新的日志框架，即：**LogX**。
 
+## 类图
+
+![Image](art/logx_uml.png)
+
+> 从上面的类图可以明确的看出LogX内部之间的关系与结构了。
+
 ## 引入
 
 ### Gradle:
@@ -34,12 +40,6 @@
     implementation 'com.github.jenly1314:logx:1.0.0'
     ```
 
-## 类图
-
-![Image](art/logx_uml.png)
-
-> 从上面的类图可以明确的看出LogX内部之间的关系与结构了。
-
 ## 使用
 
 ### 基本用法
@@ -58,20 +58,20 @@ LogX.wtf("assert");
 
 ```
 
-占位符格式化
+占位符格式化示例:
 
 ```java
 LogX.d("hello %s", "world");
 ```
 
-> 当未指定tag时，内部会自动通过线程栈获取对应的简单类名来作为tag，上面的示例皆是如此；不过你也可以自己指定tag，示例如下：
+> 当未指定tag时，内部会自动通过线程栈获取对应的简单类名来作为tag，上面的示例皆是如此；不过你也可以自己指定tag；
+
+指定tag示例如下：
 
 ```java
 // 指定tag（指定的tag是一次性的）
 LogX.tag("MyTag").d("debug");
 ```
-
-> 看了基本用法，是不是和 **Timber** 的用法几乎一样？没错，要的就是这种感觉。
 
 > 看了上面的基本用法，相信你已经知道 **LogX** 的用法了，如果还想了解更多，你可以继续往下看。
 
@@ -81,13 +81,13 @@ LogX.tag("MyTag").d("debug");
 
 ```java
 
-// 参数1：是否显示线程信息，默认为：true； 参数1：显示多少条方法行，默认为：2；参数3：方法栈偏移量，默认为：0
+// 参数1：是否显示线程信息； 参数1：显示多少方法行，；参数3：方法栈偏移量
 Logger logger = new DefaultLogger(true, 2, 0);
 LogX.setLogger(logger);
 
 ```
 
-控制日志是否记录
+全局控制日志是否记录示例：
 
 ```java
 LogX.setLogger(new DefaultLogger() {
