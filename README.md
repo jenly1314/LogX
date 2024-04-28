@@ -1,0 +1,175 @@
+# LogX
+
+[![Download](https://img.shields.io/badge/download-App-blue.svg)](https://raw.githubusercontent.com/jenly1314/LogX/master/app/release/app-release.apk)
+[![MavenCentral](https://img.shields.io/maven-central/v/com.github.jenly1314/logx)](https://repo1.maven.org/maven2/com/github/jenly1314/logx)
+[![JitPack](https://jitpack.io/v/jenly1314/LogX.svg)](https://jitpack.io/#jenly1314/LogX)
+[![CircleCI](https://circleci.com/gh/jenly1314/LogX.svg?style=svg)](https://circleci.com/gh/jenly1314/LogX)
+[![API](https://img.shields.io/badge/API-21%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=21)
+[![License](https://img.shields.io/badge/license-Apche%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+
+**LogX** 一个小而美的日志记录框架；既有 **Timber** 的易用性与可扩展性，又具备 **Logger** 的日志格式美观性。
+
+> 写这个日志框架的主要原因是为了简化维护流程。在我个人的GitHub开源项目中，有一些需要使用日志功能的库。
+> 最初，我使用的是一个自维护日志工具类：LogUtils，当开源项目数量较少时，这种方法还比较有效。
+> 然而，随着开源项目数量的增加，我不得不频繁地复制和维护LogUtils，随着时间的推移，不同开源项目中的LogUtils可能会
+> 出现微小的差异，这大大增加了维护的难度。因此，我开始考虑更加优雅的解决方案。在经过一段时间的思考和研究后，
+> 我决定结合平时使用的 [Timber](https://github.com/JakeWharton/timber) 和 [Logger](https://github.com/orhanobut/logger) 这两个成熟的开源库，取其精华，编写一个新的日志框架，即：**LogX**。
+
+## 引入
+
+### Gradle:
+
+1. 在Project的 **build.gradle** 或 **setting.gradle** 中添加远程仓库
+
+    ```gradle
+    repositories {
+        //...
+        mavenCentral()
+    }
+    ```
+
+2. 在Module的 **build.gradle** 里面添加引入依赖项
+
+    ```gradle
+    implementation 'com.github.jenly1314:logx:1.0.0'
+    ```
+
+## 类图
+
+![Image](art/logx_uml.png)
+
+> 从上面的类图可以明确的看出LogX内部之间的关系与结构了。
+
+## 使用
+
+### 基本用法
+
+如果没有特殊的要求，直接使用即可；**LogX** 不用初始化，因为 **LogX** 的默认配置就是个人最推荐的配置。（这也是我写 **LogX** 的原因之一）
+
+主要的一些方法调用示例如下：
+
+```java
+LogX.v("verbose");
+LogX.d("debug");
+LogX.i("info");
+LogX.w("warn");
+LogX.e("error");
+LogX.wtf("assert");
+
+```
+
+占位符格式化
+
+```java
+LogX.d("hello %s", "world");
+```
+
+> 当未指定tag时，内部会自动通过线程栈获取对应的简单类名来作为tag，上面的示例皆是如此；不过你也可以自己指定tag，示例如下：
+
+```java
+// 指定tag（指定的tag是一次性的）
+LogX.tag("MyTag").d("debug");
+```
+
+> 看了基本用法，是不是和 **Timber** 的用法几乎一样？没错，要的就是这种感觉。
+
+> 看了上面的基本用法，相信你已经知道 **LogX** 的用法了，如果还想了解更多，你可以继续往下看。
+
+### 高级用法
+
+如果你有特别的需求，你可以自己按照喜好进行配置`DefaultLogger`或自定义实现`Logger`。
+
+```java
+
+// 参数1：是否显示线程信息，默认为：true； 参数1：显示多少条方法行，默认为：2；参数3：方法栈偏移量，默认为：0
+Logger logger = new DefaultLogger(true, 2, 0);
+LogX.setLogger(logger);
+
+```
+
+控制日志是否记录
+
+```java
+LogX.setLogger(new DefaultLogger() {
+   @Override
+   protected boolean isLoggable(int priority, @Nullable String tag) {
+//       return super.isLoggable(priority, tag);
+        // 控制日志是否记录（LogX默认配置就是在debug包下才开启日志记录的，release包默认是关闭日志记录的。）
+       return BuildConfig.DEBUG;
+   }
+});
+```
+
+> 如果你需要有多种日志记录的方式，你也可以使用`CompositeLogger.addLogger(logger)` 添加多个`Logger`实现。
+
+### 日志效果
+
+日志的默认输出格式如下：
+
+```
+ ┌──────────────────────────────
+ │ Thread information
+ ├┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+ │ Method stack history
+ ├┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+ │ Log message
+ └──────────────────────────────
+```
+在Logcat中的实际效果如下：
+
+![Image](art/logx_output.png)
+
+### 特别说明
+
+既然LogX的实现主要是参考了：**Timber** 和 **Logger**，那么二者的诸多优点，**LogX** 自然也是支持的。
+
+比如：如果你之前是集成使用的Timber，那么现在你也可以通过如下方式，将最终的日志输出转到 **LogX**，让日志输出格式更具美观性。
+```java
+Timber.plant(new Timber.Tree() {
+   @Override
+   protected void log(int priority, @Nullable String tag, @NonNull String message, @Nullable Throwable throwable) {
+       if(tag != null) {
+           LogX.tag(tag);
+       }
+       // 在Timber目前层级没发生变化的情况下，方法栈偏移4 即可准确定位到原始Timber调用的代码所在行。（这里不需要throwable，因为message里面已经包含了）
+       LogX.offset(4).log(priority, message);
+   }
+});
+
+```
+
+> 通过使用`LogX.offset(offset)`进行方法栈的偏移，就算多库混用也互不影响，都可以轻松的定位到日志具体的代码行。
+
+更多使用详情，请查看[app](app)中的源码使用示例或直接查看[API帮助文档](https://jitpack.io/com/github/jenly1314/LogX/latest/javadoc/)
+
+## 版本记录
+
+#### v1.0.0：2024-04-28
+
+* LogX初始版本
+
+## 赞赏
+
+如果你喜欢LogX，或感觉LogX帮助到了你，可以点右上角“Star”支持一下，你的支持就是我的动力，谢谢 :smiley:
+<p>您也可以扫描下面的二维码，请作者喝杯咖啡 :coffee:
+
+<div>
+   <img src="https://jenly1314.github.io/image/page/rewardcode.png">
+</div>
+
+## 关于我
+
+| 我的博客                                                                                | GitHub                                                                                  | Gitee                                                                                 | CSDN                                                                                | 博客园                                                                           |
+|:------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------|:------------------------------------------------------------------------------|
+| <a title="我的博客" href="https://jenly1314.github.io" target="_blank">Jenly's Blog</a> | <a title="GitHub开源项目" href="https://github.com/jenly1314" target="_blank">jenly1314</a> | <a title="Gitee开源项目" href="https://gitee.com/jenly1314" target="_blank">jenly1314</a> | <a title="CSDN博客" href="http://blog.csdn.net/jenly121" target="_blank">jenly121</a> | <a title="博客园" href="https://www.cnblogs.com/jenly" target="_blank">jenly</a> |
+
+## 联系我
+
+| 微信公众号                                                   | Gmail邮箱                                                                          | QQ邮箱                                                                              | QQ群                                                                                                                       | QQ群                                                                                                                       |
+|:--------------------------------------------------------|:---------------------------------------------------------------------------------|:----------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------|
+| [Jenly666](http://weixin.qq.com/r/wzpWTuPEQL4-ract92-R) | <a title="给我发邮件" href="mailto:jenly1314@gmail.com" target="_blank">jenly1314</a> | <a title="给我发邮件" href="mailto:jenly1314@vip.qq.com" target="_blank">jenly1314</a> | <a title="点击加入QQ群" href="https://qm.qq.com/cgi-bin/qm/qr?k=6_RukjAhwjAdDHEk2G7nph-o8fBFFzZz" target="_blank">20867961</a> | <a title="点击加入QQ群" href="https://qm.qq.com/cgi-bin/qm/qr?k=Z9pobM8bzAW7tM_8xC31W8IcbIl0A-zT" target="_blank">64020761</a> |
+
+<div>
+   <img src="https://jenly1314.github.io/image/page/footer.png">
+</div>
+   

@@ -1,0 +1,53 @@
+@startuml
+
+interface ILogger {
+    +offset(methodOffset: Int): ILogger
+    +tag(tag: String): ILogger
+    +v(message: String?)
+    +d(message: String?)
+    +i(message: String?)
+    +w(message: String?)
+    +e(message: String?)
+    +wtf(message: String?)
+    +log(priority: Int, message: String?)
+    +...(...)
+}
+
+class Logger {
+    #isLoggable(priority: Int, tag: String?): Boolean
+    +log(priority: Int, tag: String?, message: String?, t: Throwable?)
+    #...(...)
+}
+
+class DefaultLogger {
+    #println(priority: Int, tag: String?, message: String)
+}
+
+class CompositeLogger {
+    +loggerCount: Int
+
+    +addLogger(logger: Logger)
+    +addLogger(vararg loggers: Logger)
+    +removeLogger(logger: Logger)
+    +removeAllLoggers()
+}
+
+object LogX {
+    +VERBOSE
+    +DEBUG
+    +INFO
+    +WARN
+    +ERROR
+    +ASSERT
+    +setLogger(logger: Logger)
+}
+
+ILogger <|-- Logger
+
+Logger <|-- CompositeLogger
+
+Logger <|-- DefaultLogger
+
+ILogger <|- LogX
+
+@enduml
