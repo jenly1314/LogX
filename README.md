@@ -20,7 +20,7 @@
 
 ![Image](art/logx_uml.png)
 
-> 从上面的类图可以明确的看出LogX内部之间的关系与结构。
+> 从上面的类图可以明确的看出 **LogX** 内部之间的关系与结构。
 
 ## 引入
 
@@ -61,7 +61,7 @@ LogX.wtf("assert");
 
 ```
 
-占位符格式化示例:
+占位符格式化示例如下:
 
 ```java
 LogX.d("hello %s", "world");
@@ -76,7 +76,7 @@ LogX.d("hello %s", "world");
 LogX.tag("MyTag").d("debug");
 ```
 
-> 看了上面的基本用法，相信你已经知道 **LogX** 的用法了，如果还想了解更多，你可以继续往下看。
+> 看了上面的基本用法，相信你已经会使用 **LogX** 了；如果还想了解更多，你可以继续往下看高级用法。
 
 ### 高级用法
 
@@ -90,21 +90,22 @@ LogX.setLogger(logger);
 
 ```
 
-全局配置日志是否记录示例：
+全局配置是否记录日志示例如下：
 
 ```java
 LogX.setLogger(new DefaultLogger() {
    @Override
    protected boolean isLoggable(int priority, @Nullable String tag) {
 //       return super.isLoggable(priority, tag);
-        // 控制日志是否记录
+        // 比如：只在开发模式才记录日志
        return BuildConfig.DEBUG;
    }
 });
 ```
 > **LogX** 默认配置就是在debug包下才开启日志记录的，release包默认是关闭日志记录的。
 
-使用`CompositeLogger`管理`Logger`示例：
+使用`CompositeLogger`管理`Logger`示例如下：
+
 ```java
 CompositeLogger compositeLogger = new CompositeLogger();
 // 添加任意的Logger实现即可；例如：DefaultLogger
@@ -133,7 +134,7 @@ LogX.setLogger(compositeLogger);
 
 ### 特别说明
 
-既然LogX的实现主要是参考了：**Timber** 和 **Logger**，那么二者的诸多优点，**LogX** 自然也是支持的。
+既然 **LogX** 的实现主要是参考了：**Timber** 和 **Logger**，那么二者的诸多优点，**LogX** 自然也是支持的。
 
 比如：如果你之前是集成使用的Timber，那么现在你也可以通过如下方式，将最终的日志输出转到 **LogX**，让日志输出格式更具美观性。
 ```java
