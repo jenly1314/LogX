@@ -9,17 +9,18 @@
 
 **LogX** 一个小而美的日志记录框架；既有 **Timber** 的易用性与可扩展性，又具备 **Logger** 的日志格式美观性。
 
-> 写这个日志框架的主要原因是为了简化维护流程。在我个人的GitHub开源项目中，有一些需要使用日志功能的库。
-> 最初，我使用的是一个自维护日志工具类：LogUtils，当开源项目数量较少时，这种方法还比较有效。
-> 然而，随着开源项目数量的增加，我不得不频繁地复制和维护LogUtils，随着时间的推移，不同开源项目中的LogUtils可能会
-> 出现微小的差异，这大大增加了维护的难度。因此，我开始考虑更加优雅的解决方案。在经过一段时间的思考和研究后，
-> 我决定结合平时使用的 [Timber](https://github.com/JakeWharton/timber) 和 [Logger](https://github.com/orhanobut/logger) 这两个成熟的开源库，取其精华，编写一个新的日志框架，即：**LogX**。
+>写这个日志框架的主要原因是为了简化维护流程。在我个人的GitHub开源项目中，有一些需要使用日志功能的库。
+>最初，我使用的是一个自维护日志工具类：LogUtils，当开源项目数量较少时，这种方法还比较有效。
+>然而，随着开源项目数量的增加，我不得不频繁地复制和维护LogUtils，随着时间的推移，不同开源项目中的LogUtils可能会
+>出现一些差异，这大大增加了维护的难度。因此，我开始考虑更加优雅的解决方案。在经过一段时间的思考和研究后，我决定
+>结合平时使用的 [Timber](https://github.com/JakeWharton/timber) 和 [Logger](https://github.com/orhanobut/logger) 这
+>两个成熟的开源库，取其精华，编写一个新的日志框架，即：**LogX**。
 
 ## 类图
 
 ![Image](art/logx_uml.png)
 
-> 从上面的类图可以明确的看出LogX内部之间的关系与结构了。
+> 从上面的类图可以明确的看出LogX内部之间的关系与结构。
 
 ## 引入
 
@@ -44,7 +45,9 @@
 
 ### 基本用法
 
-如果没有特殊的要求，直接使用即可；**LogX** 不用初始化，因为 **LogX** 的默认配置就是个人最推荐的配置。（这也是我写 **LogX** 的原因之一）
+如果没有特殊的要求，直接使用即可。
+
+> **LogX** 无需初始化，因为 **LogX** 的默认配置就是个人最推荐的配置。（这也是我写 **LogX** 的原因之一）
 
 主要的一些方法调用示例如下：
 
@@ -87,20 +90,29 @@ LogX.setLogger(logger);
 
 ```
 
-全局控制日志是否记录示例：
+全局配置日志是否记录示例：
 
 ```java
 LogX.setLogger(new DefaultLogger() {
    @Override
    protected boolean isLoggable(int priority, @Nullable String tag) {
 //       return super.isLoggable(priority, tag);
-        // 控制日志是否记录（LogX默认配置就是在debug包下才开启日志记录的，release包默认是关闭日志记录的。）
+        // 控制日志是否记录
        return BuildConfig.DEBUG;
    }
 });
 ```
+> **LogX** 默认配置就是在debug包下才开启日志记录的，release包默认是关闭日志记录的。
 
-> 如果你需要有多种日志记录的方式，你也可以使用`CompositeLogger.addLogger(logger)` 添加多个`Logger`实现。
+使用`CompositeLogger`管理`Logger`示例：
+```java
+CompositeLogger compositeLogger = new CompositeLogger();
+// 添加任意的Logger实现即可；例如：DefaultLogger
+compositeLogger.addLogger(new DefaultLogger());
+LogX.setLogger(compositeLogger);
+```
+
+> 如以上内置的功能都不满足你的需求，你还可以自定义实现一个`Logger`。
 
 ### 日志效果
 
