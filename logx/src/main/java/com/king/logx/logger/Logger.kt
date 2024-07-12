@@ -174,7 +174,8 @@ abstract class Logger @JvmOverloads constructor(private val methodOffset: Int = 
         if (!isLoggable(priority, onceOnlyTag)) {
             return
         }
-        log(priority, onceOnlyTag, formatMessage(message, args), t)
+        val logMessage = if(args.isNotEmpty()) formatMessage(message, args) else message
+        log(priority, onceOnlyTag, logMessage, t)
     }
 
     /** Formats a log message with optional arguments. */

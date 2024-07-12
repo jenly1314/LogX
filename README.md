@@ -38,7 +38,7 @@
 2. 在Module的 **build.gradle** 里面添加引入依赖项
 
     ```gradle
-    implementation 'com.github.jenly1314:logx:1.0.0'
+    implementation 'com.github.jenly1314:logx:1.0.1'
     ```
 
 ## 使用
@@ -97,7 +97,7 @@ LogX.setLogger(new DefaultLogger() {
    @Override
    protected boolean isLoggable(int priority, @Nullable String tag) {
 //       return super.isLoggable(priority, tag);
-        // 比如：只在开发模式才记录日志
+        // 例如：只在开发模式才记录日志
        return BuildConfig.DEBUG;
    }
 });
@@ -141,9 +141,9 @@ LogX.setLogger(compositeLogger);
 Timber.plant(new Timber.Tree() {
    @Override
    protected void log(int priority, @Nullable String tag, @NonNull String message, @Nullable Throwable throwable) {
-       if(tag != null) {
-           LogX.tag(tag);
-       }
+//       if(tag != null) { // 这里的tag可要可不要
+//           LogX.tag(tag);
+//       }
        // 在Timber目前层级没发生变化的情况下，方法栈偏移4 即可准确定位到原始Timber调用的代码所在行。（这里不需要throwable，因为message里面已经包含了）
        LogX.offset(4).log(priority, message);
    }
@@ -157,8 +157,10 @@ Timber.plant(new Timber.Tree() {
 
 ## 版本记录
 
-#### v1.0.0：2024-04-28
+#### v1.0.1：2024-07-12
+* 修复了一些已知问题
 
+#### v1.0.0：2024-04-28
 * LogX初始版本
 
 ## 赞赏
