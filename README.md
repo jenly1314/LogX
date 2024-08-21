@@ -14,7 +14,7 @@
 >然而，随着开源项目数量的增加，我不得不频繁地复制和维护LogUtils，随着时间的推移，不同开源项目中的LogUtils可能会
 >出现一些差异，这大大增加了维护的难度。因此，我开始考虑更加优雅的解决方案。在经过一段时间的思考和研究后，我决定
 >结合平时使用的 [Timber](https://github.com/JakeWharton/timber) 和 [Logger](https://github.com/orhanobut/logger) 这
->两个成熟的开源库，取其精华，编写一个新的日志框架，即：**LogX**。
+>两个成熟的开源库，取其精华，编写一个新的日志框架，即：**LogX** 。
 
 ## 类图
 
@@ -153,9 +153,11 @@ Timber.plant(new Timber.Tree() {
 
 > 通过使用`LogX.offset(offset)`进行方法栈的偏移，就算多库混用也互不影响，都可以轻松的定位到日志具体的代码行。
 
-更多使用详情，请查看[app](app)中的源码使用示例或直接查看[API帮助文档](https://jitpack.io/com/github/jenly1314/LogX/latest/javadoc/)
+更多使用详情，请查看[app](app)中的源码使用示例或直接查看[API帮助文档](https://jenly1314.github.io/LogX/api/)
 
-## 版本记录
+<!-- end -->
+
+## 版本日志
 
 #### v1.0.1：2024-07-12
 * 修复了一些已知问题
@@ -187,4 +189,4 @@ Timber.plant(new Timber.Tree() {
 <div>
    <img src="https://jenly1314.github.io/image/page/footer.png">
 </div>
-   
+

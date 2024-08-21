@@ -15,9 +15,6 @@ ext.build_versions = build_versions
 // App dependencies
 def versions = [:]
 
-versions.mavenPublish = '0.22.0'
-versions.gradle = "7.2.1"
-
 //androidx
 versions.appcompat = "1.2.0"
 versions.constraintLayout = "2.0.4"
