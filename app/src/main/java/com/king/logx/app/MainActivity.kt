@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.king.logx.LogX
 import com.king.logx.app.databinding.ActivityMainBinding
+import com.king.logx.util.FormatUtils
 
 /**
  * LogX 示例
@@ -29,6 +30,13 @@ class MainActivity : AppCompatActivity() {
         LogX.e("error")
         LogX.tag("LogX").d("hello %s", "world")
 
+        val json = "{\"key\": \"value\", \"array\":[\"item1\",\"item2\"]}"
+        // 打印格式化后的json
+        LogX.d(FormatUtils.formatJson(json))
+
+        val xml = "<root><key>value</key><array><item>item1</item><item>item2</item></array></root>"
+        // 打印格式化后的xml
+        LogX.d(FormatUtils.formatXml(xml))
     }
 
 }

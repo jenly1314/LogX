@@ -38,7 +38,7 @@
 2. 在Module的 **build.gradle** 里面添加引入依赖项
 
     ```gradle
-    implementation 'com.github.jenly1314:logx:1.0.1'
+    implementation 'com.github.jenly1314:logx:1.1.0'
     ```
 
 ## 使用
@@ -153,17 +153,35 @@ Timber.plant(new Timber.Tree() {
 
 > 通过使用`LogX.offset(offset)`进行方法栈的偏移，就算多库混用也互不影响，都可以轻松的定位到日志具体的代码行。
 
+### 关于`FormatUtils`（v1.1.0新增）
+
+格式化`json`和`xml`本不属于日志打印的范畴，但考虑到格式化后的`json`和`xml`能提升一定程度上的可读性与美观性；最终决定提供一个工具类`FormatUtils`来支持格式化功能；至于是否需要格式化，把决定权交给使用的开发者。
+
+#### 格式化json示例：
+```java
+String json = "{\"key\": \"value\", \"array\":[\"item1\",\"item2\"]}";
+// 打印格式化后的json
+LogX.d(FormatUtils.formatJson(json));
+
+```
+
+#### 格式化xml示例：
+```java
+String xml = "<root><key>value</key><array><item>item1</item><item>item2</item></array></root>";
+// 打印格式化后的xml
+LogX.d(FormatUtils.formatXml(xml));
+```
+
 更多使用详情，请查看[app](app)中的源码使用示例或直接查看[API帮助文档](https://jenly1314.github.io/LogX/api/)
 
 <!-- end -->
 
 ## 版本日志
 
-#### v1.0.1：2024-07-12
-* 修复了一些已知问题
+#### v1.1.0：2024-12-10
+* 新增格式化工具类：`FormatUtils`
 
-#### v1.0.0：2024-04-28
-* LogX初始版本
+#### [查看更多版本日志](CHANGELOG.md)
 
 ## 赞赏
 

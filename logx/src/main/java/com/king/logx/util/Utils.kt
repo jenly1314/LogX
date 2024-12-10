@@ -5,7 +5,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 
 /**
- * 工具类
+ * Utility class.
  *
  * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
  * <p>

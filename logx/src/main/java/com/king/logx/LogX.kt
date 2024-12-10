@@ -204,7 +204,7 @@ class LogX private constructor() {
         /** Log an assert exception and a message with optional format args. */
         @JvmStatic
         override fun wtf(t: Throwable?, message: String?, vararg args: Any?) {
-            logger.w(t, message, *args)
+            logger.wtf(t, message, *args)
         }
 
         /** Log an assert exception. */
