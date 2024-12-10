@@ -132,6 +132,25 @@ LogX.setLogger(compositeLogger);
 
 ![Image](art/logx_output.png)
 
+### 关于`FormatUtils`（v1.1.0新增）
+
+格式化`json`和`xml`本不属于日志打印的范畴，但为了提升可读性和美观性，决定提供一个工具类`FormatUtils`来支持此功能。至于是否需要格式化，由开发者根据实际需求自行决定。
+
+#### 格式化json示例：
+```java
+String json = "{\"key\": \"value\", \"array\":[\"item1\",\"item2\"]}";
+// 打印格式化后的json
+LogX.d(FormatUtils.formatJson(json));
+
+```
+
+#### 格式化xml示例：
+```java
+String xml = "<root><key>value</key><array><item>item1</item><item>item2</item></array></root>";
+// 打印格式化后的xml
+LogX.d(FormatUtils.formatXml(xml));
+```
+
 ### 特别说明
 
 既然 **LogX** 的实现主要是参考了：**Timber** 和 **Logger**，那么二者的诸多优点，**LogX** 自然也是支持的。
@@ -152,25 +171,6 @@ Timber.plant(new Timber.Tree() {
 ```
 
 > 通过使用`LogX.offset(offset)`进行方法栈的偏移，就算多库混用也互不影响，都可以轻松的定位到日志具体的代码行。
-
-### 关于`FormatUtils`（v1.1.0新增）
-
-格式化`json`和`xml`本不属于日志打印的范畴，但为了提升可读性和美观性，决定提供一个工具类`FormatUtils`来支持此功能。至于是否需要格式化，由开发者根据实际需求自行决定。
-
-#### 格式化json示例：
-```java
-String json = "{\"key\": \"value\", \"array\":[\"item1\",\"item2\"]}";
-// 打印格式化后的json
-LogX.d(FormatUtils.formatJson(json));
-
-```
-
-#### 格式化xml示例：
-```java
-String xml = "<root><key>value</key><array><item>item1</item><item>item2</item></array></root>";
-// 打印格式化后的xml
-LogX.d(FormatUtils.formatXml(xml));
-```
 
 更多使用详情，请查看[app](app)中的源码使用示例或直接查看[API帮助文档](https://jenly1314.github.io/LogX/api/)
 
