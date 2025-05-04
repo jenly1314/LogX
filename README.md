@@ -136,7 +136,7 @@ LogX.setLogger(logger)
 
 ```
 
-> `LogFormat`为v1.2.0新增，这里不过多介绍，下面会有`LogFormat相关说明`。
+> `LogFormat`为v1.2.0新增，这里不过多介绍，下面会有`LogFormat`相关说明。
 
 全局配置是否记录日志示例如下：
 
@@ -197,7 +197,7 @@ LogX.setLogger(compositeLogger);
 
 ![Image](art/logx_output.png)
 
-> 这里的日志效果，对应的日志格式是：`LogFormat.PRETTY`。
+> 这里的日志效果，对应的日志格式是：`LogFormat.PRETTY`，下面会有`LogFormat`相关说明。
 
 ### 特别说明
 
@@ -273,7 +273,7 @@ LogX.tag("MyTag").d("debug");
 
 **`LogX.format(logFormat)`的日志格式（即：`LogFormat`）选择：**
 
-**LogFormat格式说明**
+##### LogFormat格式说明
 
 - `LogFormat.PRETTY` - 美化格式（默认），带结构化分隔线的日志排版，提升可读性，便于开发调试时快速定位问题；
 - `LogFormat.PLAIN` - 普通格式，与Android原生日志格式一致，适用于：高频日志输出，调用栈不重要的场景。
@@ -307,6 +307,14 @@ LogX.d(FormatUtils.formatXml(xml));
 ```
 
 更多使用详情，请查看[app](app)中的源码使用示例或直接查看[API帮助文档](https://jenly1314.github.io/LogX/api/)
+
+## 相关推荐
+
+- [MVVMFrame](https://github.com/jenly1314/MVVMFrame) 一个基于Google官方推出的JetPack构建的MVVM快速开发框架。
+- [ZXingLite](https://github.com/jenly1314/ZXingLite) 基于zxing实现的扫码库，优化扫码和生成二维码/条形码功能。
+- [MLKit](https://github.com/jenly1314/MLKit) 一个强大易用的工具包。通过ML Kit您可以很轻松的实现文字识别、条码识别、图像标记、人脸检测、对象检测等功能。
+- [WeChatQRCode](https://github.com/jenly1314/WeChatQRCode) 基于OpenCV开源的微信二维码引擎移植的扫码识别库。
+- [CameraScan](https://github.com/jenly1314/CameraScan) 一个简化扫描识别流程的通用基础库。
 
 <!-- end -->
 
