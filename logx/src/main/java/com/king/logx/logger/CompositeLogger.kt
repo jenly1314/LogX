@@ -5,9 +5,11 @@ import java.util.Collections
 /**
  * [CompositeLogger]可以同时管理多个[Logger]，提供更多的扩展性。
  *
- * * 通过[addLogger]函数可以添加[Logger]
- * * 通过[removeLogger]函数可以移除已添加过的[Logger]
- * * 通过[removeAllLoggers]函数可以移除所有的[Logger]
+ * [CompositeLogger] can manage multiple [Logger]s simultaneously, providing greater extensibility.
+ *
+ * - 通过[addLogger]函数可以添加[Logger]
+ * - 通过[removeLogger]函数可以移除已添加过的[Logger]
+ * - 通过[removeAllLoggers]函数可以移除所有的[Logger]
  *
  * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
  * <p>
@@ -19,6 +21,13 @@ class CompositeLogger : Logger() {
 
     @Volatile
     private var loggerArray = emptyArray<Logger>()
+
+    override fun format(logFormat: LogFormat): ILogger {
+        loggerArray.forEach {
+            it.format(logFormat)
+        }
+        return this
+    }
 
     override fun offset(methodOffset: Int): ILogger {
         loggerArray.forEach {
@@ -166,6 +175,8 @@ class CompositeLogger : Logger() {
     }
 
     /**
+     * 添加新的日志记录器
+     *
      * Add new logger.
      */
     fun addLogger(logger: Logger) {
@@ -177,6 +188,8 @@ class CompositeLogger : Logger() {
     }
 
     /**
+     * 批量添加多个日志记录器
+     *
      * Adds new loggers.
      */
     fun addLogger(vararg loggers: Logger) {
@@ -192,6 +205,8 @@ class CompositeLogger : Logger() {
     }
 
     /**
+     * 移除已添加的日志记录器
+     *
      * Remove a added logger.
      */
     fun removeLogger(logger: Logger) {
@@ -202,6 +217,8 @@ class CompositeLogger : Logger() {
     }
 
     /**
+     * 移除所有已添加的日志记录器
+     *
      * Remove all added loggers.
      */
     fun removeAllLoggers() {
@@ -212,7 +229,9 @@ class CompositeLogger : Logger() {
     }
 
     /**
-     * Return the number of loggers
+     * 获取当前日志记录器数量
+     *
+     * Return the number of loggers.
      */
     @get:[JvmName("loggerCount")]
     val loggerCount get() = loggerArray.size

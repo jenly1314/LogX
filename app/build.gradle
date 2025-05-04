@@ -52,6 +52,10 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraintLayout"
 
+//    implementation 'com.github.jenly1314:logx:1.1.0'
     implementation project(':logx')
+
+    implementation 'com.orhanobut:logger:2.2.0'
+    implementation 'com.jakewharton.timber:timber:5.0.1'
 }
 

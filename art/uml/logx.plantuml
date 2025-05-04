@@ -1,6 +1,7 @@
 @startuml
 
 interface ILogger {
+    +format(logFormat: LogFormat): ILogger
     +offset(methodOffset: Int): ILogger
     +tag(tag: String): ILogger
     +v(message: String?)
@@ -15,12 +16,17 @@ interface ILogger {
 
 class Logger {
     #isLoggable(priority: Int, tag: String?): Boolean
-    +log(priority: Int, tag: String?, message: String?, t: Throwable?)
+    #log(priority: Int, tag: String?, message: String?, t: Throwable?)
     #...(...)
 }
 
 class DefaultLogger {
     #println(priority: Int, tag: String?, message: String)
+}
+
+class FileLogger {
+    #buildMessage(priority: Int, tag: String?, message: String): String
+    +...(...)
 }
 
 class CompositeLogger {
@@ -47,6 +53,8 @@ ILogger <|-- Logger
 Logger <|-- CompositeLogger
 
 Logger <|-- DefaultLogger
+
+DefaultLogger <|-- FileLogger
 
 ILogger <|- LogX
 

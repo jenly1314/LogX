@@ -1,7 +1,7 @@
 //App
 def app_version = [:]
-app_version.versionCode = 3
-app_version.versionName = "1.1.0"
+app_version.versionCode = 4
+app_version.versionName = "1.2.0"
 ext.app_version = app_version
 
 //build version
@@ -19,6 +19,7 @@ def versions = [:]
 versions.appcompat = "1.2.0"
 versions.constraintLayout = "2.0.4"
 versions.startup = "1.1.0"
+versions.coroutines = "1.7.3"
 
 //test
 versions.junit = "4.13.2"

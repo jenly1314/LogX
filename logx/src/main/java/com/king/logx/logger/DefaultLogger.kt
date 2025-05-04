@@ -2,146 +2,169 @@ package com.king.logx.logger
 
 import android.util.Log
 import com.king.logx.LogX
+import com.king.logx.logger.config.DefaultLoggerConfig
 import com.king.logx.util.Utils
+import com.king.logx.util.Utils.Companion.utf8ByteSize
 
 /**
  * 默认实现的[Logger]，既美观又实用。
  *
- * 日志的默认输出格式如下：
+ * Default [Logger] implementation with beautiful & practical design.
  *
- * ```
- *  ┌──────────────────────────────
- *  │ Thread information
- *  ├┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
- *  │ Method stack history
- *  ├┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
- *  │ Log message
- *  └──────────────────────────────
- * ```
- *
- * @param showThreadInfo Whether to show thread info or not. Default true
- * @param methodCount How many method line to show. Default 2
- * @param methodOffset Hides internal method calls up to offset.
+ * @param config Logger configuration.
  *
  * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
  * <p>
  * <a href="https://github.com/jenly1314">Follow me</a>
- *
  */
 open class DefaultLogger @JvmOverloads constructor(
-    private val showThreadInfo: Boolean = true,
-    private val methodCount: Int = 2,
-    private val methodOffset: Int = 0
-) : Logger(methodOffset) {
+    config: DefaultLoggerConfig = DefaultLoggerConfig.build(),
+) : Logger(config) {
 
-    override fun isLoggable(priority: Int, tag: String?): Boolean {
-        return LogX.isDebug
-    }
+    private val showThreadInfo = config.showThreadInfo
+    private val methodCount = config.methodCount
 
-    /**
-     * Write a log message to its destination. Called for all level-specific methods by default.
-     *
-     * @param priority Log level. See [LogX] for constants.
-     * @param tag Explicit or inferred tag. May be `null`.
-     * @param message Formatted log message.
-     * @param t Accompanying exceptions. May be `null`.
-     */
     override fun log(priority: Int, tag: String?, message: String?, t: Throwable?) {
-        var logMessage = message.toString()
-        if (message.isNullOrEmpty()) {
-            if (t != null) {
-                logMessage = Utils.getStackTraceString(t)
-            }
-        } else if (t != null) {
-            logMessage += "\n" + Utils.getStackTraceString(t)
+        val logMessage = when {
+            message.isNullOrEmpty() && t != null -> Utils.getStackTraceString(t)
+            t != null -> "$message\n${Utils.getStackTraceString(t)}"
+            else -> message.toString()
         }
 
-        logTopBorder(priority, tag)
-        logHeaderContent(priority, tag, methodCount, lastOffset)
-
-        // get bytes of message with system's default charset (which is UTF-8 for Android)
-        val bytes = logMessage.toByteArray()
-        val length = bytes.size
-        if (length <= MAX_LOG_LENGTH) {
-            if (methodCount > 0) {
-                logDivider(priority, tag)
+        when (lastLogFormat) {
+            LogFormat.PRETTY -> {
+                logTopBorder(priority, tag)
+                logStackTrace(priority, tag)
+                logContent(priority, tag, logMessage) {
+                    "$HORIZONTAL_LINE $it"
+                }
+                logBottomBorder(priority, tag)
             }
-            logContent(priority, tag, logMessage)
-            logBottomBorder(priority, tag)
-            return
+
+            LogFormat.PLAIN -> {
+                logContent(priority, tag, logMessage)
+            }
         }
-        if (methodCount > 0) {
-            logDivider(priority, tag)
-        }
-        var i = 0
-        while (i < length) {
-            val count = (length - i).coerceAtMost(MAX_LOG_LENGTH)
-            //create a new String with system's default charset (which is UTF-8 for Android)
-            logContent(priority, tag, String(bytes, i, count))
-            i += MAX_LOG_LENGTH
-        }
-        logBottomBorder(priority, tag)
     }
 
     private fun logTopBorder(priority: Int, tag: String?) {
         println(priority, tag, TOP_BORDER)
     }
 
-    private fun logHeaderContent(priority: Int, tag: String?, methodCount: Int, methodOffset: Int) {
+    private fun logStackTrace(priority: Int, tag: String?) {
         if (showThreadInfo) {
             println(priority, tag, "$HORIZONTAL_LINE Thread: ${Thread.currentThread().name}")
             logDivider(priority, tag)
         }
+
+        if (methodCount <= 0) return
+
         val stackTrace = getStackTrace()
-        var level = ""
-        val stackOffset = getStackOffset(stackTrace) + methodOffset
-        var showMethodCount = methodCount
+        val baseTraceIndex = getStackOffset(stackTrace) + lastOffset
+        val traceDepth = minOf(methodCount, stackTrace.size - baseTraceIndex)
 
-        //corresponding method count with the current stack may exceeds the stack trace. Trims the count
-        if (showMethodCount + stackOffset > stackTrace.size) {
-            showMethodCount = stackTrace.size - stackOffset - 1
+        if (traceDepth <= 0) return
+
+        val deepestTraceIndex = baseTraceIndex + traceDepth - 1
+        var indentLevel = ""
+        val messageBuffer = StringBuilder(TRACE_LINE_CAPACITY * traceDepth)
+
+        // 遍历打印调用栈信息
+        for (i in deepestTraceIndex downTo baseTraceIndex) {
+            val stackElement = stackTrace[i]
+            messageBuffer.run {
+                append(HORIZONTAL_LINE)
+                append(' ')
+                append(indentLevel)
+                append(stackElement.className.substringAfterLast('.'))
+                append('.')
+                append(stackElement.methodName)
+                append('(')
+                append(stackElement.fileName)
+                append(':')
+                append(stackElement.lineNumber)
+                append(')')
+                toString()
+            }.also { println(priority, tag, it) }
+
+            indentLevel += INDENT
+            messageBuffer.clear()
         }
-        for (i in showMethodCount downTo 1) {
-            val stackIndex = i + stackOffset
-            if (stackIndex >= stackTrace.size) {
-                continue
-            }
-            val builder = StringBuilder()
-            builder.append(HORIZONTAL_LINE)
-                .append(' ')
-                .append(level)
-                .append(getSimpleClassName(stackTrace[stackIndex].className))
-                .append(".")
-                .append(stackTrace[stackIndex].methodName)
-                .append("(")
-                .append(stackTrace[stackIndex].fileName)
-                .append(":")
-                .append(stackTrace[stackIndex].lineNumber)
-                .append(")")
-            level += INDENT
-            println(priority, tag, builder.toString())
-        }
-    }
 
-    private fun getSimpleClassName(name: String): String {
-        return name.substringAfterLast('.')
-    }
-
-    private fun logBottomBorder(priority: Int, tag: String?) {
-        println(priority, tag, BOTTOM_BORDER)
+        logDivider(priority, tag)
     }
 
     private fun logDivider(priority: Int, tag: String?) {
         println(priority, tag, MIDDLE_BORDER)
     }
 
-    private fun logContent(priority: Int, tag: String?, chunk: String) {
-        chunk.split(System.lineSeparator().toRegex()).dropLastWhile { it.isEmpty() }.forEach {
-            println(priority, tag, "$HORIZONTAL_LINE $it")
+    private fun logBottomBorder(priority: Int, tag: String?) {
+        println(priority, tag, BOTTOM_BORDER)
+    }
+
+    private inline fun logContent(
+        priority: Int,
+        tag: String?,
+        message: String,
+        crossinline transform: (String) -> String = { it }
+    ) {
+        message.lineSequence().forEach {
+            if (shouldSplitChunks(it)) {
+                splitLogChunks(it) { chunk ->
+                    println(priority, tag, transform(chunk))
+                }
+            } else {
+                println(priority, tag, transform(it))
+            }
+        }
+    }
+
+    private fun shouldSplitChunks(message: String): Boolean {
+        // 短日志快速跳过（保守估计：3字节/字符）
+        if (message.length <= SIMPLE_LOG_MAX_CHARS) return false
+
+        // 超长日志直接拆分（乐观估计：1字节/字符）
+        if (message.length > MAX_LOG_BYTES) return true
+
+        // 精确计算日志的UTF-8字节长度
+        var bytes = 0
+        for (char in message) {
+            bytes += char.utf8ByteSize()
+            if (bytes > MAX_LOG_BYTES) return true
+        }
+        return false
+    }
+
+    private inline fun splitLogChunks(message: String, crossinline onChunk: (String) -> Unit) {
+        var chunkStart = 0
+        var byteCount = 0
+        val length = message.length
+        var i = 0
+
+        while (i < length) {
+            val char = message[i]
+            val charByteSize = char.utf8ByteSize()
+
+            // 累计字节数超过限制时，拆分当前块
+            if (byteCount + charByteSize > MAX_LOG_BYTES) {
+                onChunk(message.substring(chunkStart, i))
+                chunkStart = i
+                byteCount = charByteSize
+            } else {
+                byteCount += charByteSize
+            }
+            i++
+        }
+
+        // 处理最后剩余的字符块
+        if (chunkStart < length) {
+            onChunk(message.substring(chunkStart))
         }
     }
 
     /**
+     * 将日志消息写入目标输出
+     *
      * Write a log message to its destination.
      *
      * @param priority Log level. See [LogX] for constants.

@@ -1,18 +1,56 @@
 package com.king.logx.logger
 
 import com.king.logx.LogX
+import com.king.logx.logger.config.LoggerConfig
 import com.king.logx.util.Utils
 
 /**
- * 日志记录器基类；封装好一些通用的逻辑，从而简化其子类的实现。
+ * 日志记录器抽象基类，封装通用逻辑以简化子类实现
  *
- * @param methodOffset Hides internal method calls up to offset.
+ * Abstract logger base class encapsulating common logic to simplify subclass implementations.
+ *
+ * @param config Logger configuration.
  *
  * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
  * <p>
  * <a href="https://github.com/jenly1314">Follow me</a>
  */
-abstract class Logger @JvmOverloads constructor(private val methodOffset: Int = 0) : ILogger {
+abstract class Logger(config: LoggerConfig) : ILogger {
+
+    /**
+     * 构造
+     *
+     * @param logFormat Log display format, defaults to [LogFormat.PRETTY] for better readability
+     * @param methodOffset Stack trace offset (hides internal method calls)
+     */
+    @JvmOverloads
+    constructor(logFormat: LogFormat = LogFormat.PRETTY, methodOffset: Int = 0) : this(
+        config = LoggerConfig.build {
+            this.logFormat = logFormat
+            this.methodOffset = methodOffset
+        }
+    )
+
+    private val logFormat = config.logFormat
+    private val methodOffset = config.methodOffset
+
+    @get:JvmSynthetic // Hide from public API.
+    private val explicitLogFormat = ThreadLocal<LogFormat>()
+
+    @get:JvmSynthetic // Hide from public API.
+    private val format: LogFormat
+        get() {
+            val onceOnlyLogMode = explicitLogFormat.get()
+            if (onceOnlyLogMode != null) {
+                explicitLogFormat.remove()
+                return onceOnlyLogMode
+            }
+            return logFormat
+        }
+
+    @Volatile
+    var lastLogFormat = logFormat
+        internal set
 
     @get:JvmSynthetic // Hide from public API.
     private val explicitOffset = ThreadLocal<Int>()
@@ -29,12 +67,13 @@ abstract class Logger @JvmOverloads constructor(private val methodOffset: Int = 
         }
 
     @Volatile
-    internal var lastOffset = methodOffset
+    var lastOffset = methodOffset
+        internal set
 
     @get:JvmSynthetic // Hide from public API.
     private val explicitTag = ThreadLocal<String>()
 
-    @get:JvmSynthetic
+    @get:JvmSynthetic // Hide from public API.
     private val tag: String?
         get() {
             val onceOnlyTag = explicitTag.get()
@@ -43,170 +82,162 @@ abstract class Logger @JvmOverloads constructor(private val methodOffset: Int = 
                 return onceOnlyTag
             }
             return getStackTrace().let {
-                it.getOrNull(getStackOffset(it) + 1 + lastOffset)
+                it.getOrNull(getStackOffset(it) + lastOffset)
             }?.let { Utils.createStackElementTag(it) }
         }
 
-    /** Set a one-time method trace offset for use on the next logging call. */
+    override fun format(logFormat: LogFormat): ILogger {
+        explicitLogFormat.set(logFormat)
+        return this
+    }
+
     override fun offset(methodOffset: Int): ILogger {
         explicitOffset.set(methodOffset)
         return this
     }
 
-    /** Set a one-time tag for use on the next logging call. */
     override fun tag(tag: String): ILogger {
         explicitTag.set(tag)
         return this
     }
 
-    /** Log a verbose message with optional format args. */
     override fun v(message: String?, vararg args: Any?) {
         prepareLog(LogX.VERBOSE, null, message, *args)
     }
 
-    /** Log a verbose exception and a message with optional format args. */
     override fun v(t: Throwable?, message: String?, vararg args: Any?) {
         prepareLog(LogX.VERBOSE, t, message, *args)
     }
 
-    /** Log a verbose exception. */
     override fun v(t: Throwable?) {
         prepareLog(LogX.VERBOSE, t, null)
     }
 
-    /** Log a debug message with optional format args. */
     override fun d(message: String?, vararg args: Any?) {
         prepareLog(LogX.DEBUG, null, message, *args)
     }
 
-    /** Log a debug exception and a message with optional format args. */
     override fun d(t: Throwable?, message: String?, vararg args: Any?) {
         prepareLog(LogX.DEBUG, t, message, *args)
     }
 
-    /** Log a debug exception. */
     override fun d(t: Throwable?) {
         prepareLog(LogX.DEBUG, t, null)
     }
 
-    /** Log an info message with optional format args. */
     override fun i(message: String?, vararg args: Any?) {
         prepareLog(LogX.INFO, null, message, *args)
     }
 
-    /** Log an info exception and a message with optional format args. */
     override fun i(t: Throwable?, message: String?, vararg args: Any?) {
         prepareLog(LogX.INFO, t, message, *args)
     }
 
-    /** Log an info exception. */
     override fun i(t: Throwable?) {
         prepareLog(LogX.INFO, t, null)
     }
 
-    /** Log a warning message with optional format args. */
     override fun w(message: String?, vararg args: Any?) {
         prepareLog(LogX.WARN, null, message, *args)
     }
 
-    /** Log a warning exception and a message with optional format args. */
     override fun w(t: Throwable?, message: String?, vararg args: Any?) {
         prepareLog(LogX.WARN, t, message, *args)
     }
 
-    /** Log a warning exception. */
     override fun w(t: Throwable?) {
         prepareLog(LogX.WARN, t, null)
     }
 
-    /** Log an error message with optional format args. */
     override fun e(message: String?, vararg args: Any?) {
         prepareLog(LogX.ERROR, null, message, *args)
     }
 
-    /** Log an error exception and a message with optional format args. */
     override fun e(t: Throwable?, message: String?, vararg args: Any?) {
         prepareLog(LogX.ERROR, t, message, *args)
     }
 
-    /** Log an error exception. */
     override fun e(t: Throwable?) {
         prepareLog(LogX.ERROR, t, null)
     }
 
-    /** Log an assert message with optional format args. */
     override fun wtf(message: String?, vararg args: Any?) {
         prepareLog(LogX.ASSERT, null, message, *args)
     }
 
-    /** Log an assert exception and a message with optional format args. */
     override fun wtf(t: Throwable?, message: String?, vararg args: Any?) {
         prepareLog(LogX.ASSERT, t, message, *args)
     }
 
-    /** Log an assert exception. */
     override fun wtf(t: Throwable?) {
         prepareLog(LogX.ASSERT, t, null)
     }
 
-    /** Log at `priority` an message. */
     override fun log(priority: Int, message: String?) {
         prepareLog(priority, null, message)
     }
 
-    /** Log at `priority` an exception and a message. */
     override fun log(priority: Int, t: Throwable?, message: String?) {
         prepareLog(priority, t, message)
     }
 
-    /** Log at `priority` an exception. */
     override fun log(priority: Int, t: Throwable?) {
         prepareLog(priority, t, null)
     }
 
-    /** Return whether a message at `priority` or `tag` should be logged. */
-    protected open fun isLoggable(priority: Int, tag: String?) = true
+    /**
+     * 判断指定`priority`或`tag`的日志是否应该被记录
+     *
+     * Return whether a message at `priority` or `tag` should be logged.
+     */
+    protected open fun isLoggable(priority: Int, tag: String?) = LogX.isDebug
 
     @Synchronized
     private fun prepareLog(priority: Int, t: Throwable?, message: String?, vararg args: Any?) {
         lastOffset = offset
+        lastLogFormat = format
         val onceOnlyTag = tag
         if (!isLoggable(priority, onceOnlyTag)) {
             return
         }
-        val logMessage = if(args.isNotEmpty()) formatMessage(message, args) else message
+        val logMessage = if (args.isNotEmpty()) formatMessage(message, args) else message
         log(priority, onceOnlyTag, logMessage, t)
     }
 
-    /** Formats a log message with optional arguments. */
+    /**
+     * 格式化带参数的日志消息
+     *
+     * Formats a log message with optional arguments.
+     */
     protected open fun formatMessage(message: String?, args: Array<out Any?>): String? {
         return message?.format(*args)
     }
 
     /**
+     * 获取当前调用堆栈信息（从调用点开始）
+     *
      * Provides programmatic access to the stack trace information printed
      */
     protected open fun getStackTrace(): Array<StackTraceElement> = Throwable().stackTrace
 
     /**
+     * 确定堆栈跟踪的起始索引（跳过本类内部方法调用）
+     *
      * Determines the starting index of the stack trace, after method calls made by this class.
      *
      * @param trace the stack trace
      * @return the stack offset
      */
     protected fun getStackOffset(trace: Array<StackTraceElement>): Int {
-        var i = MIN_STACK_OFFSET
-        while (i < trace.size) {
-            val className = trace[i].className
-            if (className !in LogX.internalIgnore) {
-                return --i
-            }
-            i++
+        for (i in MIN_STACK_OFFSET until trace.size) {
+            if (!LogX.internalIgnore.contains(trace[i].className)) return i
         }
-        return -1
+        return 0
     }
 
     /**
+     * 将日志消息写入目标输出（默认由所有级别特定的方法调用）
+     *
      * Write a log message to its destination. Called for all level-specific methods by default.
      *
      * @param priority Log level. See [LogX] for constants.
@@ -214,20 +245,22 @@ abstract class Logger @JvmOverloads constructor(private val methodOffset: Int = 
      * @param message Formatted log message.
      * @param t Accompanying exceptions. May be `null`.
      */
-    abstract fun log(priority: Int, tag: String?, message: String?, t: Throwable?)
+    protected abstract fun log(priority: Int, tag: String?, message: String?, t: Throwable?)
 
     internal companion object {
         private const val TOP_LEFT_CORNER = '┌'
         private const val BOTTOM_LEFT_CORNER = '└'
         private const val MIDDLE_CORNER = '├'
         const val HORIZONTAL_LINE = '│'
-        private const val DOUBLE_DIVIDER = "─────────────────────────────────────────────────"
-        private const val SINGLE_DIVIDER = "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"
+        private const val DOUBLE_DIVIDER = "──────────────────────────────────────────────────"
+        private const val SINGLE_DIVIDER = "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"
         const val TOP_BORDER = "$TOP_LEFT_CORNER$DOUBLE_DIVIDER$DOUBLE_DIVIDER"
         const val BOTTOM_BORDER = "$BOTTOM_LEFT_CORNER$DOUBLE_DIVIDER$DOUBLE_DIVIDER"
         const val MIDDLE_BORDER = "$MIDDLE_CORNER$SINGLE_DIVIDER$SINGLE_DIVIDER"
-        const val MAX_LOG_LENGTH = 4000
+        const val MAX_LOG_BYTES = 4000
+        const val SIMPLE_LOG_MAX_CHARS = MAX_LOG_BYTES / 3
         const val MIN_STACK_OFFSET = 5
+        const val TRACE_LINE_CAPACITY = 128
         const val INDENT = "    "
     }
 }
