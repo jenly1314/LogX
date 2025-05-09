@@ -1,11 +1,11 @@
 # LogX
 
-[![Download](https://img.shields.io/badge/download-App-blue.svg)](https://raw.githubusercontent.com/jenly1314/LogX/master/app/release/app-release.apk)
-[![MavenCentral](https://img.shields.io/maven-central/v/com.github.jenly1314/logx)](https://repo1.maven.org/maven2/com/github/jenly1314/logx)
-[![JitPack](https://jitpack.io/v/jenly1314/LogX.svg)](https://jitpack.io/#jenly1314/LogX)
-[![CircleCI](https://circleci.com/gh/jenly1314/LogX.svg?style=svg)](https://circleci.com/gh/jenly1314/LogX)
-[![API](https://img.shields.io/badge/API-21%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=21)
-[![License](https://img.shields.io/badge/license-Apche%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![MavenCentral](https://img.shields.io/maven-central/v/com.github.jenly1314/logx?logo=sonatype)](https://repo1.maven.org/maven2/com/github/jenly1314/logx)
+[![JitPack](https://img.shields.io/jitpack/v/github/jenly1314/LogX?logo=jitpack)](https://jitpack.io/#jenly1314/LogX)
+[![CircleCI](https:///img.shields.io/circleci/build/github/jenly1314/LogX?logo=circleci)](https://app.circleci.com/pipelines/github/jenly1314/LogX)
+[![Download](https://img.shields.io/badge/download-APK-brightgreen?logo=github)](https://raw.githubusercontent.com/jenly1314/LogX/master/app/release/app-release.apk)
+[![API](https://img.shields.io/badge/API-21%2B-brightgreen?logo=android)](https://developer.android.com/guide/topics/manifest/uses-sdk-element#ApiLevels)
+[![License](https://img.shields.io/github/license/jenly1314/LogX?logo=open-source-initiative)](https://opensource.org/licenses/apache-2-0)
 
 **LogX** —— 轻量而强大的日志框架，兼具 **Timber** 的优雅易用与高度扩展性，同时拥有 **Logger** 般精美的日志格式化输出。
 
@@ -314,7 +314,7 @@ LogX.d(FormatUtils.formatXml(xml));
 - [ZXingLite](https://github.com/jenly1314/ZXingLite) 基于zxing实现的扫码库，优化扫码和生成二维码/条形码功能。
 - [MLKit](https://github.com/jenly1314/MLKit) 一个强大易用的工具包。通过ML Kit您可以很轻松的实现文字识别、条码识别、图像标记、人脸检测、对象检测等功能。
 - [WeChatQRCode](https://github.com/jenly1314/WeChatQRCode) 基于OpenCV开源的微信二维码引擎移植的扫码识别库。
-- [CameraScan](https://github.com/jenly1314/CameraScan) 一个简化扫描识别流程的通用基础库。
+- [LogX](https://github.com/jenly1314/LogX) 一个简化扫描识别流程的通用基础库。
 
 <!-- end -->
 
