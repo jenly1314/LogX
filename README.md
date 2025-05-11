@@ -330,4 +330,6 @@ LogX.d(FormatUtils.formatXml(xml));
 
 #### [查看更多版本日志](CHANGELOG.md)
 
+---
+
 ![footer](https://jenly1314.github.io/page/footer.svg)
