@@ -330,4 +330,11 @@ LogX.d(FormatUtils.formatXml(xml));
 
 #### [查看更多版本日志](CHANGELOG.md)
 
+### 社交与联系
+
+| **博客**                                      | **GitHub**                                | **Gitee**                                | **微信公众号**                                               | **Gmail邮箱**                                       | **QQ邮箱**                                            | **QQ群**                                                                        | **QQ群**                                                                        |
+|:--------------------------------------------|:------------------------------------------|:-----------------------------------------|:--------------------------------------------------------|:--------------------------------------------------|:----------------------------------------------------|:-------------------------------------------------------------------------------|:-------------------------------------------------------------------------------|
+| [Jenly's Blog](https://jenly1314.github.io) | [jenly1314](https://github.com/jenly1314) | [jenly1314](https://gitee.com/jenly1314) | [Jenly666](http://weixin.qq.com/r/wzpWTuPEQL4-ract92-R) | [jenly1314@gmail.com](mailto:jenly1314@gmail.com) | [jenly1314@vip.qq.com](mailto:jenly1314@vip.qq.com) | [20867961](https://qm.qq.com/cgi-bin/qm/qr?k=6_RukjAhwjAdDHEk2G7nph-o8fBFFzZz) | [64020761](https://qm.qq.com/cgi-bin/qm/qr?k=Z9pobM8bzAW7tM_8xC31W8IcbIl0A-zT) |
+
+
 ![footer](https://jenly1314.github.io/page/footer.svg)
