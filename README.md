@@ -2,7 +2,7 @@
 
 [![MavenCentral](https://img.shields.io/maven-central/v/com.github.jenly1314/logx?logo=sonatype)](https://repo1.maven.org/maven2/com/github/jenly1314/logx)
 [![JitPack](https://img.shields.io/jitpack/v/github/jenly1314/LogX?logo=jitpack)](https://jitpack.io/#jenly1314/LogX)
-[![CircleCI](https:///img.shields.io/circleci/build/github/jenly1314/LogX?logo=circleci)](https://app.circleci.com/pipelines/github/jenly1314/LogX)
+[![CI](https://img.shields.io/github/actions/workflow/status/jenly1314/LogX/build.yml?logo=github)](https://github.com/jenly1314/LogX/actions/workflows/build.yml)
 [![Download](https://img.shields.io/badge/download-APK-brightgreen?logo=github)](https://raw.githubusercontent.com/jenly1314/LogX/master/app/release/app-release.apk)
 [![API](https://img.shields.io/badge/API-21%2B-brightgreen?logo=android)](https://developer.android.com/guide/topics/manifest/uses-sdk-element#ApiLevels)
 [![License](https://img.shields.io/github/license/jenly1314/LogX?logo=open-source-initiative)](https://opensource.org/licenses/apache-2-0)
@@ -332,9 +332,9 @@ LogX.d(FormatUtils.formatXml(xml));
 
 ### 社交与联系
 
-| **博客**                                      | **GitHub**                                | **Gitee**                                | **微信公众号**                                               | **Gmail邮箱**                                       | **QQ邮箱**                                            | **QQ群**                                                                        | **QQ群**                                                                        |
-|:--------------------------------------------|:------------------------------------------|:-----------------------------------------|:--------------------------------------------------------|:--------------------------------------------------|:----------------------------------------------------|:-------------------------------------------------------------------------------|:-------------------------------------------------------------------------------|
-| [Jenly's Blog](https://jenly1314.github.io) | [jenly1314](https://github.com/jenly1314) | [jenly1314](https://gitee.com/jenly1314) | [Jenly666](http://weixin.qq.com/r/wzpWTuPEQL4-ract92-R) | [jenly1314@gmail.com](mailto:jenly1314@gmail.com) | [jenly1314@vip.qq.com](mailto:jenly1314@vip.qq.com) | [20867961](https://qm.qq.com/cgi-bin/qm/qr?k=6_RukjAhwjAdDHEk2G7nph-o8fBFFzZz) | [64020761](https://qm.qq.com/cgi-bin/qm/qr?k=Z9pobM8bzAW7tM_8xC31W8IcbIl0A-zT) |
+| **博客**                                      | **GitHub**                                | **Gitee**                                | **邮箱**                                                                      | **QQ群**                                                                        | **QQ群**                                                                        |
+|:--------------------------------------------|:------------------------------------------|:-----------------------------------------|:----------------------------------------------------------------------------|:-------------------------------------------------------------------------------|:-------------------------------------------------------------------------------|
+| [Jenly's Blog](https://jenly1314.github.io) | [jenly1314](https://github.com/jenly1314) | [jenly1314](https://gitee.com/jenly1314) | [Gmail](mailto:jenly1314@gmail.com)/ [QQ mail](mailto:jenly1314@vip.qq.com) | [20867961](https://qm.qq.com/cgi-bin/qm/qr?k=6_RukjAhwjAdDHEk2G7nph-o8fBFFzZz) | [64020761](https://qm.qq.com/cgi-bin/qm/qr?k=Z9pobM8bzAW7tM_8xC31W8IcbIl0A-zT) |
 
 
 ![footer](https://jenly1314.github.io/page/footer.svg)
