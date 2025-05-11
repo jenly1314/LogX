@@ -330,11 +330,10 @@ LogX.d(FormatUtils.formatXml(xml));
 
 #### [查看更多版本日志](CHANGELOG.md)
 
-### 社交与联系
+## 个人信息
 
-| **博客**                                      | **GitHub**                                | **Gitee**                                | **邮箱**                                                                      | **QQ群**                                                                        | **QQ群**                                                                        |
-|:--------------------------------------------|:------------------------------------------|:-----------------------------------------|:----------------------------------------------------------------------------|:-------------------------------------------------------------------------------|:-------------------------------------------------------------------------------|
-| [Jenly's Blog](https://jenly1314.github.io) | [jenly1314](https://github.com/jenly1314) | [jenly1314](https://gitee.com/jenly1314) | [Gmail](mailto:jenly1314@gmail.com)/ [QQ mail](mailto:jenly1314@vip.qq.com) | [20867961](https://qm.qq.com/cgi-bin/qm/qr?k=6_RukjAhwjAdDHEk2G7nph-o8fBFFzZz) | [64020761](https://qm.qq.com/cgi-bin/qm/qr?k=Z9pobM8bzAW7tM_8xC31W8IcbIl0A-zT) |
-
+| **博客**                                      | **GitHub**                                | **Gitee**                                | **开源项目**                                     | **邮箱**                                                                       | **QQ群**                                                                                  | **QQ群**                                                                                  |
+|:--------------------------------------------|:------------------------------------------|:-----------------------------------------|:---------------------------------------------|:-----------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------|
+| [Jenly's Blog](https://jenly1314.github.io) | [jenly1314](https://github.com/jenly1314) | [jenly1314](https://gitee.com/jenly1314) | [开源项目](https://jenly1314.github.io/projects) | [Gmail](mailto:jenly1314@gmail.com) / [QQ mail](mailto:jenly1314@vip.qq.com) | [20867961](https://qm.qq.com/cgi-bin/qm/qr?k=6_RukjAhwjAdDHEk2G7nph-o8fBFFzZz "点击加入QQ群") | [64020761](https://qm.qq.com/cgi-bin/qm/qr?k=Z9pobM8bzAW7tM_8xC31W8IcbIl0A-zT "点击加入QQ群") |
 
 ![footer](https://jenly1314.github.io/page/footer.svg)
