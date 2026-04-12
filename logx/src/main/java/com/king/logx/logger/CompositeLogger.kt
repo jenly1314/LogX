@@ -20,7 +20,7 @@ class CompositeLogger : Logger() {
     private val loggers = ArrayList<Logger>()
 
     @Volatile
-    private var loggerArray = emptyArray<Logger>()
+    private var loggerArray: Array<Logger> = emptyArray()
 
     override fun format(logFormat: LogFormat): ILogger {
         loggerArray.forEach {

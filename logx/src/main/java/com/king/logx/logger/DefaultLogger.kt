@@ -28,7 +28,7 @@ open class DefaultLogger @JvmOverloads constructor(
         val logMessage = when {
             message.isNullOrEmpty() && t != null -> Utils.getStackTraceString(t)
             t != null -> "$message\n${Utils.getStackTraceString(t)}"
-            else -> message.toString()
+            else -> message.orEmpty()
         }
 
         when (lastLogFormat) {
@@ -72,7 +72,7 @@ open class DefaultLogger @JvmOverloads constructor(
         // 遍历打印调用栈信息
         for (i in deepestTraceIndex downTo baseTraceIndex) {
             val stackElement = stackTrace[i]
-            messageBuffer.run {
+            messageBuffer.apply {
                 append(HORIZONTAL_LINE)
                 append(' ')
                 append(indentLevel)
@@ -84,9 +84,8 @@ open class DefaultLogger @JvmOverloads constructor(
                 append(':')
                 append(stackElement.lineNumber)
                 append(')')
-                toString()
-            }.also { println(priority, tag, it) }
-
+            }
+            println(priority, tag, messageBuffer.toString())
             indentLevel += INDENT
             messageBuffer.clear()
         }
@@ -120,10 +119,10 @@ open class DefaultLogger @JvmOverloads constructor(
     }
 
     private fun shouldSplitChunks(message: String): Boolean {
-        // 短日志快速跳过（保守估计：3字节/字符）
+        // 短日志快速跳过（保守估计：3个字节/字符）
         if (message.length <= SIMPLE_LOG_MAX_CHARS) return false
 
-        // 超长日志直接拆分（乐观估计：1字节/字符）
+        // 超长日志直接拆分（乐观估计：1个字节/字符）
         if (message.length > MAX_LOG_BYTES) return true
 
         // 精确计算日志的UTF-8字节长度

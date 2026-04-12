@@ -63,9 +63,9 @@ open class FileLogger @JvmOverloads constructor(
      */
     private class LogWriter(val file: File, val size: AtomicLong) {
 
-        @Volatile
         private var writer: BufferedWriter? = null
 
+        @Synchronized
         fun write(message: String) {
             if (writer == null) {
                 writer = BufferedWriter(
@@ -75,7 +75,7 @@ open class FileLogger @JvmOverloads constructor(
                     )
                 )
             }
-            writer?.write(message)
+            writer!!.write(message)
         }
 
         @Synchronized
@@ -113,7 +113,6 @@ open class FileLogger @JvmOverloads constructor(
         }
     }
 
-    @Synchronized
     private fun processLogMessage(message: String) {
         try {
             val byteSize = message.utf8ByteSize()
@@ -174,27 +173,22 @@ open class FileLogger @JvmOverloads constructor(
         var candidateFile: File? = null
         var latestTime = 0L
 
-        logDir.list()?.let { filenames ->
-            for (filename in filenames) {
-                if (!filename.startsWith(config.filePrefix) || !filename.endsWith(config.fileExtension)) {
-                    continue
+        logDir.listFiles { file ->
+            file.name.startsWith(config.filePrefix) && file.name.endsWith(config.fileExtension)
+        }?.forEach { file ->
+            try {
+                val lastModified = file.lastModified()
+                // 小于最小可复用时间的直接跳过
+                if (lastModified < minReusableTime) return@forEach
+
+                // 只更新候选文件（如果比当前候选文件更新）
+                if (lastModified > latestTime) {
+                    candidateFile = file
+                    latestTime = lastModified
                 }
-                try {
-                    val file = File(logDir, filename)
-
-                    val lastModified = file.lastModified()
-                    // 小于最小可复用时间的直接跳过
-                    if (lastModified < minReusableTime) continue
-
-                    // 只更新候选文件（如果比当前候选文件更新）
-                    if (lastModified > latestTime) {
-                        candidateFile = file
-                        latestTime = lastModified
-                    }
-                } catch (e: Exception) {
-                    if (LogX.isDebug) {
-                        Log.w(TAG, Utils.getStackTraceString(e))
-                    }
+            } catch (e: Exception) {
+                if (LogX.isDebug) {
+                    Log.w(TAG, Utils.getStackTraceString(e))
                 }
             }
         }
@@ -227,8 +221,11 @@ open class FileLogger @JvmOverloads constructor(
 
     override fun log(priority: Int, tag: String?, message: String?, t: Throwable?) {
         isLogInProgress.set(true)
-        super.log(priority, tag, message, t)
-        isLogInProgress.set(false)
+        try {
+            super.log(priority, tag, message, t)
+        } finally {
+            isLogInProgress.set(false)
+        }
     }
 
     override fun println(priority: Int, tag: String?, message: String) {
@@ -246,7 +243,7 @@ open class FileLogger @JvmOverloads constructor(
     }
 
     /**
-     * 构建日志消息；默认格式为："$timestamp $level/$tag: $message"
+     * 构建日志消息；默认格式为：$timestamp $level/$tag: $message
      *
      * Build log message with default format: "$timestamp $level/$tag: $message"
      *
@@ -257,7 +254,7 @@ open class FileLogger @JvmOverloads constructor(
     protected open fun buildMessage(priority: Int, tag: String?, message: String): String {
         val timestamp = logDateFormat.get()!!.format(Date())
         val level = Utils.getLogLevel(priority)
-        return "$timestamp $level/${tag.toString()}: $message\n"
+        return "$timestamp $level/${tag.orEmpty()}: $message\n"
     }
 
     /**
@@ -267,6 +264,7 @@ open class FileLogger @JvmOverloads constructor(
      */
     fun shutdown() {
         if (coroutineScope.isActive) {
+            logChannel.close()
             coroutineScope.cancel()
             Log.d(TAG, "CoroutineScope was cancelled.")
         } else {

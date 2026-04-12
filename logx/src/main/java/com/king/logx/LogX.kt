@@ -94,7 +94,7 @@ class LogX private constructor() {
         internal var isDebug = true
 
         @get:JvmSynthetic
-        internal val internalIgnore = setOf<String>(
+        internal val internalIgnore = setOf(
             LogX::class.java.name,
             Companion::class.java.name,
             DefaultLogger::class.java.name,
@@ -109,6 +109,7 @@ class LogX private constructor() {
          * Currently active logger (default: [DefaultLogger])
          */
         @JvmStatic
+        @Volatile
         private var logger: Logger = DefaultLogger()
 
         /**
@@ -131,6 +132,22 @@ class LogX private constructor() {
             logger.format(logFormat)
             return this
         }
+
+        /**
+         * 为下次日志调用设置一次性日志显示格式为 [LogFormat.PRETTY]（美化格式）
+         *
+         * Set a one-time log display format to [LogFormat.PRETTY] for use on the next logging call.
+         */
+        @JvmStatic
+        fun pretty(): ILogger = format(LogFormat.PRETTY)
+
+        /**
+         * 为下次日志调用设置一次性日志显示格式为 [LogFormat.PLAIN]（普通格式）
+         *
+         * Set a one-time log display format to [LogFormat.PLAIN] for use on the next logging call.
+         */
+        @JvmStatic
+        fun plain(): ILogger = format(LogFormat.PLAIN)
 
         /**
          * 为下次日志调用设置一次性方法跟踪偏移量

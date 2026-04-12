@@ -44,11 +44,11 @@ open class FileLoggerConfig protected constructor(
 ) : DefaultLoggerConfig(logFormat, showThreadInfo, methodCount, methodOffset) {
 
     /**
-     * [FileLoggerConfig] 构建器
+     * [FileLoggerConfig] 构建器基类，支持泛型自引用以保证子类链式调用返回正确类型
      *
-     * Builder for [FileLoggerConfig]
+     * Base builder for [FileLoggerConfig] with self-referential generic for fluent subclass chaining.
      */
-    open class Builder : DefaultLoggerConfig.Builder() {
+    open class BaseBuilder<SELF : BaseBuilder<SELF>> : DefaultLoggerConfig.BaseBuilder<SELF>() {
         /**
          * 设置是否同时输出日志到Logcat，默认：false
          *
@@ -128,9 +128,9 @@ open class FileLoggerConfig protected constructor(
          *
          * @param logToLogcat Whether to output to Logcat. Default false
          */
-        open fun setLogToLogcat(logToLogcat: Boolean): Builder {
+        fun setLogToLogcat(logToLogcat: Boolean): SELF {
             this.logToLogcat = logToLogcat
-            return this
+            return self()
         }
 
         /**
@@ -140,9 +140,9 @@ open class FileLoggerConfig protected constructor(
          *
          * @param maxFileSize Maximum file size in bytes. Default 2MB
          */
-        open fun setMaxFileSize(maxFileSize: Long): Builder {
+        fun setMaxFileSize(maxFileSize: Long): SELF {
             this.maxFileSize = maxFileSize
-            return this
+            return self()
         }
 
         /**
@@ -152,9 +152,9 @@ open class FileLoggerConfig protected constructor(
          *
          * @param maxFileCount Maximum file count. Default 10
          */
-        open fun setMaxFileCount(maxFileCount: Int): Builder {
+        fun setMaxFileCount(maxFileCount: Int): SELF {
             this.maxFileCount = maxFileCount
-            return this
+            return self()
         }
 
         /**
@@ -164,9 +164,9 @@ open class FileLoggerConfig protected constructor(
          *
          * @param filePrefix File name prefix. Default "logx_"
          */
-        open fun setFilePrefix(filePrefix: String): Builder {
+        fun setFilePrefix(filePrefix: String): SELF {
             this.filePrefix = filePrefix
-            return this
+            return self()
         }
 
         /**
@@ -176,9 +176,9 @@ open class FileLoggerConfig protected constructor(
          *
          * @param fileExtension File extension. Default ".log"
          */
-        open fun setFileExtension(fileExtension: String): Builder {
+        fun setFileExtension(fileExtension: String): SELF {
             this.fileExtension = fileExtension
-            return this
+            return self()
         }
 
         /**
@@ -188,9 +188,9 @@ open class FileLoggerConfig protected constructor(
          *
          * @param formatPattern The date format pattern for log file names, defaults to "yyyyMMdd_HHmmss"
          */
-        open fun setFileNameFormatPattern(formatPattern: String): Builder {
+        fun setFileNameFormatPattern(formatPattern: String): SELF {
             this.fileNameFormatPattern = formatPattern
-            return this
+            return self()
         }
 
         /**
@@ -200,9 +200,9 @@ open class FileLoggerConfig protected constructor(
          *
          * @param formatPattern The date-time format pattern for log entries, defaults to "yyyy-MM-dd HH:mm:ss.SSS"
          */
-        open fun setLogDateFormatPattern(formatPattern: String): Builder {
+        fun setLogDateFormatPattern(formatPattern: String): SELF {
             this.logDateFormatPattern = formatPattern
-            return this
+            return self()
         }
 
         /**
@@ -212,9 +212,9 @@ open class FileLoggerConfig protected constructor(
          *
          * @param logDir Directory path for storing logs. Default "logs"
          */
-        open fun setLogDir(logDir: String): Builder {
+        fun setLogDir(logDir: String): SELF {
             this.logDir = logDir
-            return this
+            return self()
         }
 
         /**
@@ -224,57 +224,9 @@ open class FileLoggerConfig protected constructor(
          *
          * @param reuseThresholdMillis Maximum time difference (in milliseconds) allowed for log reuse
          */
-        open fun setReuseThresholdMillis(reuseThresholdMillis: Long): Builder {
+        fun setReuseThresholdMillis(reuseThresholdMillis: Long): SELF {
             this.reuseThresholdMillis = reuseThresholdMillis
-            return this
-        }
-
-        /**
-         * 设置日志显示格式
-         *
-         * Set log display format.
-         *
-         * @param logFormat Log display format, defaults to [LogFormat.PRETTY] for better readability
-         */
-        override fun setLogFormat(logFormat: LogFormat): Builder {
-            super.setLogFormat(logFormat)
-            return this
-        }
-
-        /**
-         * 设置堆栈跟踪偏移量
-         *
-         * Set stack trace offset.
-         *
-         * @param methodOffset Stack trace offset (hides internal method calls)
-         */
-        override fun setMethodOffset(methodOffset: Int): Builder {
-            super.setMethodOffset(methodOffset)
-            return this
-        }
-
-        /**
-         * 设置是否显示线程信息
-         *
-         * Set whether to show thread info.
-         *
-         * @param showThreadInfo Whether to show thread info or not. Default true
-         */
-        override fun setShowThreadInfo(showThreadInfo: Boolean): Builder {
-            super.setShowThreadInfo(showThreadInfo)
-            return this
-        }
-
-        /**
-         * 设置要显示的调用栈方法行数
-         *
-         * Sets the number of method lines to show.
-         *
-         * @param methodCount Number of lines to show (default: 2)
-         */
-        override fun setMethodCount(methodCount: Int): Builder {
-            super.setMethodCount(methodCount)
-            return this
+            return self()
         }
 
         override fun build(): FileLoggerConfig {
@@ -296,6 +248,13 @@ open class FileLoggerConfig protected constructor(
         }
     }
 
+    /**
+     * [FileLoggerConfig] 构建器
+     *
+     * Builder for [FileLoggerConfig]
+     */
+    open class Builder : BaseBuilder<Builder>()
+
     companion object {
         private const val LOG_FILENAME_FORMAT_PATTERN = "yyyyMMdd_HHmmss"
         private const val LOG_DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS"
@@ -313,3 +272,16 @@ open class FileLoggerConfig protected constructor(
         }
     }
 }
+
+/**
+ * DSL风格顶级函数，用于构建 [FileLoggerConfig]
+ *
+ * Top-level DSL function for building a [FileLoggerConfig].
+ *
+ * @return [FileLoggerConfig]
+ */
+@JvmSynthetic
+inline fun fileLoggerConfig(block: FileLoggerConfig.Builder.() -> Unit = {}): FileLoggerConfig {
+    return FileLoggerConfig.Builder().apply(block).build()
+}
+

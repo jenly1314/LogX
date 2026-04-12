@@ -25,11 +25,11 @@ open class DefaultLoggerConfig protected constructor(
 ) : LoggerConfig(logFormat, methodOffset) {
 
     /**
-     * [DefaultLoggerConfig] 构建器
+     * [DefaultLoggerConfig] 构建器基类，支持泛型自引用以保证子类链式调用返回正确类型
      *
-     * Builder for [DefaultLoggerConfig]
+     * Base builder for [DefaultLoggerConfig] with self-referential generic for fluent subclass chaining.
      */
-    open class Builder : LoggerConfig.Builder() {
+    open class BaseBuilder<SELF : BaseBuilder<SELF>> : LoggerConfig.BaseBuilder<SELF>() {
 
         /**
          * 是否显示线程信息，默认：true
@@ -48,39 +48,15 @@ open class DefaultLoggerConfig protected constructor(
         var methodCount: Int = 2
 
         /**
-         * 设置日志显示格式
-         *
-         * Set log display format.
-         *
-         * @param logFormat Log display format, defaults to [LogFormat.PRETTY] for better readability
-         */
-        override fun setLogFormat(logFormat: LogFormat): Builder {
-            super.setLogFormat(logFormat)
-            return this
-        }
-
-        /**
-         * 设置堆栈跟踪偏移量
-         *
-         * Set stack trace offset.
-         *
-         * @param methodOffset Stack trace offset (hides internal method calls)
-         */
-        override fun setMethodOffset(methodOffset: Int): Builder {
-            super.setMethodOffset(methodOffset)
-            return this
-        }
-
-        /**
          * 设置是否显示线程信息
          *
          * Set whether to show thread info.
          *
          * @param showThreadInfo Whether to show thread info or not. Default true
          */
-        open fun setShowThreadInfo(showThreadInfo: Boolean): Builder {
+        fun setShowThreadInfo(showThreadInfo: Boolean): SELF {
             this.showThreadInfo = showThreadInfo
-            return this
+            return self()
         }
 
         /**
@@ -90,9 +66,9 @@ open class DefaultLoggerConfig protected constructor(
          *
          * @param methodCount How many method line to show. Default 2
          */
-        open fun setMethodCount(methodCount: Int): Builder {
+        fun setMethodCount(methodCount: Int): SELF {
             this.methodCount = methodCount
-            return this
+            return self()
         }
 
         /**
@@ -102,6 +78,13 @@ open class DefaultLoggerConfig protected constructor(
             return DefaultLoggerConfig(logFormat, showThreadInfo, methodCount, methodOffset)
         }
     }
+
+    /**
+     * [DefaultLoggerConfig] 构建器
+     *
+     * Builder for [DefaultLoggerConfig]
+     */
+    open class Builder : BaseBuilder<Builder>()
 
     companion object {
 
@@ -117,4 +100,16 @@ open class DefaultLoggerConfig protected constructor(
             return Builder().apply(block).build()
         }
     }
+}
+
+/**
+ * DSL风格顶级函数，用于构建 [DefaultLoggerConfig]
+ *
+ * Top-level DSL function for building a [DefaultLoggerConfig].
+ *
+ * @return [DefaultLoggerConfig]
+ */
+@JvmSynthetic
+inline fun defaultLoggerConfig(block: DefaultLoggerConfig.Builder.() -> Unit = {}): DefaultLoggerConfig {
+    return DefaultLoggerConfig.Builder().apply(block).build()
 }

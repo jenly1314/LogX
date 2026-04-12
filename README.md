@@ -119,9 +119,13 @@ LogX.setLogger(logger);
 
 ```
 
+> `LogFormat`为v1.2.0新增，这里不过多介绍，下面会有`LogFormat`具体的说明。
+
 Kotlin配置示例：
 
 > 虽然`Kotlin`也能用`Builder`来创建实例，但使用`Kotlin DSL`更简洁。
+
+这里提供两种Kotlin DSL的配置方式任选一种即可。
 
 ```kotlin
 // DSL
@@ -136,7 +140,19 @@ LogX.setLogger(logger)
 
 ```
 
-> `LogFormat`为v1.2.0新增，这里不过多介绍，下面会有`LogFormat`相关说明。
+或 (v1.3.0新增)
+```kotlin
+// DSL 顶级函数
+val config = defaultLoggerConfig {
+    logFormat = LogFormat.PRETTY // 设置日志显示格式（默认：LogFormat.PRETTY）
+    showThreadInfo = true // 设置是否显示线程信息（默认：true）
+    methodCount = 2 // 设置要显示的调用栈方法行数（默认：2）
+}
+val logger = DefaultLogger(config)
+
+LogX.setLogger(logger)
+
+```
 
 全局配置是否记录日志示例如下：
 
@@ -286,6 +302,12 @@ LogX.tag("MyTag").d("debug");
 // 指定logFormat
 LogX.format(LogFormat.PLAIN).d("original log message");
 ```
+或 （v1.3.0新增）
+```java
+// 指定logFormat为LogFormat.PLAIN
+LogX.plain().d("original log message");
+```
+> `LogX.plain()`/ `LogX.pretty()` 是 `LogX.format(LogFormat.PLAIN)`/`LogX.format(LogFormat.PRETTY)`的简化版本，提供更简洁的调用方式。
 
 ### 关于`FormatUtils`（v1.1.0新增）
 
@@ -320,13 +342,12 @@ LogX.d(FormatUtils.formatXml(xml));
 
 ## 版本日志
 
-#### v1.2.0：2025-5-4
-* 新增文件日志记录器：`FileLogger`（用于支持持久化日志到文件）
-* 新增日志格式：`LogFormat`（用于支持多种的日志显示格式）
-* 新增函数：`LogX.format(logFormat)`（用于临时指定日志格式）
-* 完善注释说明
-* 优化配置方式（让Java与Kotlin的配置方式尽可能的一致）
-* 优化一些细节
+#### v1.3.0：2026-4-12
+- 新增Kotlin DSL顶级函数：`logggerConfig {}` / `defaultLoggerConfig {}` / `fileLoggerConfig {}`
+- 新增`LogX.plain()`函数：更简洁的调用方式；含义同：`LogX.format(LogFormat.PLAIN)`
+- 新增`LogX.pretty()`函数：更简洁的调用方式；含义同：`LogX.format(LogFormat.PRETTY)`
+- 更新gradle至v8.5
+- 优化一些细节
 
 #### [查看更多版本日志](CHANGELOG.md)
 
