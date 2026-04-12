@@ -38,7 +38,7 @@
 2. 在Module的 **build.gradle** 中添加依赖项
 
     ```gradle
-    implementation 'com.github.jenly1314:logx:1.2.0'
+    implementation 'com.github.jenly1314:logx:1.3.0'
     ```
 
 ## 使用
