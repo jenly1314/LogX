@@ -9,12 +9,12 @@
 
 **LogX** —— 轻量而强大的日志框架，兼具 **Timber** 的优雅易用与高度扩展性，同时拥有 **Logger** 般精美的日志格式化输出。
 
->写这个日志框架的主要原因是为了简化维护流程。在我个人的GitHub开源项目中，有一些需要使用日志功能的库。
->最初，我使用的是一个自维护日志工具类：LogUtils，当开源项目数量较少时，这种方法还比较有效。
->然而，随着开源项目数量的增加，我不得不频繁地复制和维护LogUtils，随着时间的推移，不同开源项目中的LogUtils可能会
->出现一些差异，这大大增加了维护的难度。因此，我开始考虑更加优雅的解决方案。在经过一段时间的思考和研究后，我决定
->结合平时使用的 [Timber](https://github.com/JakeWharton/timber) 和 [Logger](https://github.com/orhanobut/logger) 这
->两个成熟的开源库，取其精华，编写一个新的日志框架，即：**LogX** 。
+> 写这个日志框架的主要原因是为了简化维护流程。在我个人的GitHub开源项目中，有一些需要使用日志功能的库。
+> 最初，我使用的是一个自维护日志工具类：LogUtils，当开源项目数量较少时，这种方法还比较有效。
+> 然而，随着开源项目数量的增加，我不得不频繁地复制和维护LogUtils。久而久之，不同开源项目中的LogUtils难免会
+> 出现一些差异，大大增加了维护的难度。因此，我开始考虑更加优雅的解决方案。在经过一段时间的思考和研究后，我决定
+> 结合平时使用的 [Timber](https://github.com/JakeWharton/timber) 和 [Logger](https://github.com/orhanobut/logger) 这
+> 两个成熟的开源库，取其精华，编写一个新的日志框架，即：**LogX** 。
 
 ## 类图
 
@@ -125,7 +125,7 @@ Kotlin配置示例：
 
 > 虽然`Kotlin`也能用`Builder`来创建实例，但使用`Kotlin DSL`更简洁。
 
-这里提供两种Kotlin DSL的配置方式任选一种即可。
+这里提供两种 Kotlin DSL 的配置方式，任选一种即可。
 
 ```kotlin
 // DSL
@@ -289,7 +289,7 @@ LogX.tag("MyTag").d("debug");
 
 **`LogX.format(logFormat)`的日志格式（即：`LogFormat`）选择：**
 
-##### LogFormat格式说明
+**LogFormat格式说明**
 
 - `LogFormat.PRETTY` - 美化格式（默认），带结构化分隔线的日志排版，提升可读性，便于开发调试时快速定位问题；
 - `LogFormat.PLAIN` - 普通格式，与Android原生日志格式一致，适用于：高频日志输出，调用栈不重要的场景。
@@ -337,6 +337,7 @@ LogX.d(FormatUtils.formatXml(xml));
 - [MLKit](https://github.com/jenly1314/MLKit) 一个强大易用的工具包。通过ML Kit您可以很轻松的实现文字识别、条码识别、图像标记、人脸检测、对象检测等功能。
 - [WeChatQRCode](https://github.com/jenly1314/WeChatQRCode) 基于OpenCV开源的微信二维码引擎移植的扫码识别库。
 - [CameraScan](https://github.com/jenly1314/CameraScan) 一个简化扫描识别流程的通用基础库。
+- [KVCache](https://github.com/jenly1314/KVCache) 一个便于统一管理的键值缓存库；支持无缝切换缓存实现。
 
 <!-- end -->
 
