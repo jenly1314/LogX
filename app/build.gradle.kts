@@ -3,6 +3,13 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+val versionCodeValue =
+    properties["VERSION_CODE"]?.toString()?.toInt()
+        ?: error("VERSION_CODE not found in gradle.properties")
+val versionNameValue =
+    properties["VERSION_NAME"]?.toString()
+        ?: error("VERSION_NAME not found in gradle.properties")
+
 android {
     namespace = "com.king.logx.app"
     compileSdk = libs.versions.compileSdk.get().toInt()
@@ -11,8 +18,8 @@ android {
         applicationId = "com.king.logx.app"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = properties["VERSION_CODE"].toString().toInt()
-        versionName = properties["VERSION_NAME"].toString()
+        versionCode = versionCodeValue
+        versionName = versionNameValue
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
