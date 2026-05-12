@@ -3,9 +3,12 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+val versionCodeProperty =
+    properties["VERSION_CODE"]?.toString()
+        ?: error("VERSION_CODE must be defined in gradle.properties")
 val versionCodeValue =
-    properties["VERSION_CODE"]?.toString()?.toIntOrNull()
-        ?: error("VERSION_CODE must be defined in gradle.properties as an integer")
+    versionCodeProperty.toIntOrNull()
+        ?: error("VERSION_CODE must be an integer in gradle.properties")
 val versionNameValue =
     properties["VERSION_NAME"]?.toString()
         ?: error("VERSION_NAME must be defined in gradle.properties")
