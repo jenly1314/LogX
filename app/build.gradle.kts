@@ -4,11 +4,11 @@ plugins {
 }
 
 val versionCodeValue =
-    properties["VERSION_CODE"]?.toString()?.toInt()
-        ?: error("VERSION_CODE not found in gradle.properties")
+    properties["VERSION_CODE"]?.toString()?.toIntOrNull()
+        ?: error("VERSION_CODE must be defined in gradle.properties as an integer")
 val versionNameValue =
     properties["VERSION_NAME"]?.toString()
-        ?: error("VERSION_NAME not found in gradle.properties")
+        ?: error("VERSION_NAME must be defined in gradle.properties")
 
 android {
     namespace = "com.king.logx.app"
