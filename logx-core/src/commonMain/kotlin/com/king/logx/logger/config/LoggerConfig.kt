@@ -1,12 +1,11 @@
 package com.king.logx.logger.config
 
 import com.king.logx.logger.LogFormat
-import com.king.logx.logger.Logger
 
 /**
- * 日志记录器配置；适用于 [Logger]
+ * 日志记录器配置
  *
- * Logger configuration for [Logger]
+ * Logger configuration
  *
  * @param logFormat Log display format.
  * @param methodOffset Stack trace offset (hides internal method calls)
@@ -32,7 +31,6 @@ open class LoggerConfig protected constructor(
          *
          * Log display format, defaults to [LogFormat.PRETTY] for better readability.
          */
-        @set:JvmSynthetic
         var logFormat: LogFormat = LogFormat.PRETTY
 
         /**
@@ -40,7 +38,6 @@ open class LoggerConfig protected constructor(
          *
          * Stack trace offset (hides internal method calls)
          */
-        @set:JvmSynthetic
         var methodOffset: Int = 0
 
         @Suppress("UNCHECKED_CAST")
@@ -94,7 +91,6 @@ open class LoggerConfig protected constructor(
          *
          * @return [LoggerConfig]
          */
-        @JvmSynthetic
         inline fun build(block: Builder.() -> Unit = {}): LoggerConfig {
             return Builder().apply(block).build()
         }
@@ -108,8 +104,6 @@ open class LoggerConfig protected constructor(
  *
  * @return [LoggerConfig]
  */
-@JvmSynthetic
 inline fun loggerConfig(block: LoggerConfig.Builder.() -> Unit = {}): LoggerConfig {
     return LoggerConfig.Builder().apply(block).build()
 }
-

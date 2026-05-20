@@ -13,6 +13,9 @@ pluginManagement {
                 "org.jetbrains.kotlin.android" -> {
                     useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
                 }
+                "org.jetbrains.kotlin.multiplatform" -> {
+                    useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
+                }
                 "org.jetbrains.dokka" -> {
                     useModule("org.jetbrains.dokka:dokka-gradle-plugin:${requested.version}")
                 }
@@ -33,4 +36,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "LogX"
-include(":app", ":logx")
+include(":app", ":logx-core", ":logx-android")
+project(":logx-android").projectDir = file("logx")

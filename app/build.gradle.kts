@@ -51,7 +51,7 @@ android {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-    implementation(project(":logx"))
+    implementation(project(":logx-android"))
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
 

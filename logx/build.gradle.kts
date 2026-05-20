@@ -42,6 +42,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":logx-core"))
     implementation(libs.androidx.startup)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
