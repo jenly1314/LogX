@@ -35,6 +35,7 @@ open class DefaultLoggerConfig protected constructor(
          *
          * Whether to show thread info. Default true
          */
+        @set:JvmSynthetic
         var showThreadInfo: Boolean = true
 
         /**
@@ -42,6 +43,7 @@ open class DefaultLoggerConfig protected constructor(
          *
          * How many method line to show. Default 2
          */
+        @set:JvmSynthetic
         var methodCount: Int = 2
 
         /**
@@ -92,6 +94,7 @@ open class DefaultLoggerConfig protected constructor(
          *
          * @return [DefaultLoggerConfig]
          */
+        @JvmSynthetic
         inline fun build(block: Builder.() -> Unit = {}): DefaultLoggerConfig {
             return Builder().apply(block).build()
         }
@@ -105,6 +108,7 @@ open class DefaultLoggerConfig protected constructor(
  *
  * @return [DefaultLoggerConfig]
  */
+@JvmSynthetic
 inline fun defaultLoggerConfig(block: DefaultLoggerConfig.Builder.() -> Unit = {}): DefaultLoggerConfig {
     return DefaultLoggerConfig.Builder().apply(block).build()
 }

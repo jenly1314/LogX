@@ -2,6 +2,9 @@ package com.king.logx.logger.config
 
 import com.king.logx.logger.LogFormat
 
+// 1 hour in milliseconds.
+private const val DEFAULT_REUSE_THRESHOLD_MILLIS = 60 * 60 * 1000L
+
 /**
  * 文件日志记录器配置
  *
@@ -52,6 +55,7 @@ open class FileLoggerConfig protected constructor(
          *
          * Whether to output to Logcat. Default false
          */
+        @set:JvmSynthetic
         var logToLogcat: Boolean = false
 
         /**
@@ -59,6 +63,7 @@ open class FileLoggerConfig protected constructor(
          *
          * Maximum size for single log file (in bytes). Default 2MB
          */
+        @set:JvmSynthetic
         var maxFileSize: Long = 2 * 1024 * 1024
 
         /**
@@ -66,6 +71,7 @@ open class FileLoggerConfig protected constructor(
          *
          * Maximum number of log files. Default 10
          */
+        @set:JvmSynthetic
         var maxFileCount: Int = 10
 
         /**
@@ -73,6 +79,7 @@ open class FileLoggerConfig protected constructor(
          *
          * Log file name prefix. Default "logx_"
          */
+        @set:JvmSynthetic
         var filePrefix: String = "logx_"
 
         /**
@@ -80,6 +87,7 @@ open class FileLoggerConfig protected constructor(
          *
          * Log file extension. Default ".log"
          */
+        @set:JvmSynthetic
         var fileExtension: String = ".log"
 
         /**
@@ -87,6 +95,7 @@ open class FileLoggerConfig protected constructor(
          *
          * Log filename format pattern. Default: "yyyyMMdd_HHmmss"
          */
+        @set:JvmSynthetic
         var fileNameFormatPattern: String = LOG_FILENAME_FORMAT_PATTERN
 
         /**
@@ -94,6 +103,7 @@ open class FileLoggerConfig protected constructor(
          *
          * Date-time format pattern in log entries. Default: "yyyy-MM-dd HH:mm:ss.SSS"
          */
+        @set:JvmSynthetic
         var logDateFormatPattern: String = LOG_DATE_FORMAT_PATTERN
 
         /**
@@ -101,6 +111,7 @@ open class FileLoggerConfig protected constructor(
          *
          * Directory path for storing logs. Default "logs"
          */
+        @set:JvmSynthetic
         var logDir: String = "logs"
 
         /**
@@ -108,7 +119,8 @@ open class FileLoggerConfig protected constructor(
          *
          * Time threshold (in milliseconds) for reusing log files. Default 1 hour
          */
-        var reuseThresholdMillis: Long = ONE_HOUR_MILLIS
+        @set:JvmSynthetic
+        var reuseThresholdMillis: Long = DEFAULT_REUSE_THRESHOLD_MILLIS
 
         /**
          * 设置是否同时输出日志到Logcat
@@ -245,7 +257,6 @@ open class FileLoggerConfig protected constructor(
     open class Builder : BaseBuilder<Builder>()
 
     companion object {
-        private const val ONE_HOUR_MILLIS = 60 * 60 * 1000L
         private const val LOG_FILENAME_FORMAT_PATTERN = "yyyyMMdd_HHmmss"
         private const val LOG_DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS"
 
@@ -256,6 +267,7 @@ open class FileLoggerConfig protected constructor(
          *
          * @return [FileLoggerConfig]
          */
+        @JvmSynthetic
         inline fun build(block: Builder.() -> Unit = {}): FileLoggerConfig {
             return Builder().apply(block).build()
         }
@@ -269,6 +281,7 @@ open class FileLoggerConfig protected constructor(
  *
  * @return [FileLoggerConfig]
  */
+@JvmSynthetic
 inline fun fileLoggerConfig(block: FileLoggerConfig.Builder.() -> Unit = {}): FileLoggerConfig {
     return FileLoggerConfig.Builder().apply(block).build()
 }
