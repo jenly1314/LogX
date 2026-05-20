@@ -2,8 +2,7 @@ package com.king.logx.logger.config
 
 import com.king.logx.logger.LogFormat
 
-private const val ONE_MINUTE_MILLIS = 60 * 1000L
-private const val DEFAULT_REUSE_THRESHOLD_MILLIS = 60 * ONE_MINUTE_MILLIS
+private const val DEFAULT_REUSE_THRESHOLD_MILLIS = 3_600_000L // 1 hour in milliseconds.
 
 /**
  * 文件日志记录器配置
